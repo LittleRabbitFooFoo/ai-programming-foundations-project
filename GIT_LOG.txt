@@ -1,17 +1,19 @@
 GIT COMMIT LOG — ai-programming-foundations-project
 Remote: git@github.com:LittleRabbitFooFoo/ai-programming-foundations-project.git
-Generated: 2026-07-31 17:12 UTC
+Generated: 2026-07-31 17:39 UTC
 
 ====================================================================
 BRANCHES
 ====================================================================
-* dev  3a0780e [origin/dev] Add radial axis labels to rose charts; add pip freeze command to README.
-  main 3a0780e [origin/main] Add radial axis labels to rose charts; add pip freeze command to README.
+* dev  d358e71 [origin/dev] Add module_summary write-up and HTML/PDF exports of both notebooks.
+  main d358e71 [origin/main] Add module_summary write-up and HTML/PDF exports of both notebooks.
 
 ====================================================================
 COMMIT GRAPH (all branches)
 ====================================================================
-* 3a0780e (HEAD -> dev, origin/main, origin/dev, main) Add radial axis labels to rose charts; add pip freeze command to README.
+* d358e71 (HEAD -> dev, origin/main, origin/dev, main) Add module_summary write-up and HTML/PDF exports of both notebooks.
+* 6d51c79 Add GIT_LOG.txt: exported commit history for zip submission
+* 3a0780e Add radial axis labels to rose charts; add pip freeze command to README.
 * a71950a Rework decode_categorical_codes to use pd.merge instead of dict-mapping.
 * fec25dd Fix stale usecols reference in Summary & Interpretation.
 * d889e85 Ground README ML/DL reflection in the actual full-column breakdown.
@@ -31,6 +33,39 @@ COMMIT GRAPH (all branches)
 ====================================================================
 FULL COMMIT LOG (main, with file stats)
 ====================================================================
+commit d358e71d345c268b0bbb0cdaa17013168bb7f3b1
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 18:38:04 2026 +0100
+
+    Add module_summary write-up and HTML/PDF exports of both notebooks.
+    
+    module_summary.ipynb is the write-up notebook (plus its .html/.pdf
+    exports) referenced by the project brief for citations/key-decisions
+    discussion. data_workflow.html/.pdf are static exports of the main
+    workflow notebook for easy viewing without running Jupyter.
+    
+    data_workflow.ipynb also picked up a small diff from being re-executed
+    under a different local kernel/pandas version (dtype labels show
+    "object" instead of "str", one describe() sample value differs) --
+    cosmetic only, no logic changes.
+
+ data_workflow.html   | 10291 +++++++++++++++++++++++++++++++++++++++++++++++++
+ data_workflow.ipynb  |   124 +-
+ data_workflow.pdf    |   Bin 0 -> 12038295 bytes
+ module_summary.html  |  7917 +++++++++++++++++++++++++++++++++++++
+ module_summary.ipynb |   125 +
+ module_summary.pdf   |   Bin 0 -> 5607381 bytes
+ 6 files changed, 18395 insertions(+), 62 deletions(-)
+
+commit 6d51c79c06a7076df4854cde3e9fcc94c73131f9
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 18:12:54 2026 +0100
+
+    Add GIT_LOG.txt: exported commit history for zip submission
+
+ GIT_LOG.txt | 251 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 251 insertions(+)
+
 commit 3a0780ee62e0589adfb0cda3cdd1545e44bc5375
 Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
 Date:   Fri Jul 31 17:23:47 2026 +0100
