@@ -1,0 +1,251 @@
+GIT COMMIT LOG — ai-programming-foundations-project
+Remote: git@github.com:LittleRabbitFooFoo/ai-programming-foundations-project.git
+Generated: 2026-07-31 17:12 UTC
+
+====================================================================
+BRANCHES
+====================================================================
+* dev  3a0780e [origin/dev] Add radial axis labels to rose charts; add pip freeze command to README.
+  main 3a0780e [origin/main] Add radial axis labels to rose charts; add pip freeze command to README.
+
+====================================================================
+COMMIT GRAPH (all branches)
+====================================================================
+* 3a0780e (HEAD -> dev, origin/main, origin/dev, main) Add radial axis labels to rose charts; add pip freeze command to README.
+* a71950a Rework decode_categorical_codes to use pd.merge instead of dict-mapping.
+* fec25dd Fix stale usecols reference in Summary & Interpretation.
+* d889e85 Ground README ML/DL reflection in the actual full-column breakdown.
+* bcc4a61 Fix ingestion: load the full dataset before narrowing columns.
+* a545bbc requirements.txt.
+* 00b1be4 README with reflections.
+* d86d542 Summary and interpretation.
+* 7daca13 5 visualizations with interpretations.
+* cbd6f6c EDA function + 5 grouped summaries.
+* 3b4f653 Temporal derivation helper.
+* 5a2e194 Cleaning function 2: dimension decode.
+* 6f4f609 Cleaning function 1: sentinel handling.
+* 25ada2e Data ingestion with memory-conscious dtypes.
+* aea9d02 Notebook scaffold + intro.
+* 6086f30 Initial environment setup.
+
+====================================================================
+FULL COMMIT LOG (main, with file stats)
+====================================================================
+commit 3a0780ee62e0589adfb0cda3cdd1545e44bc5375
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 17:23:47 2026 +0100
+
+    Add radial axis labels to rose charts; add pip freeze command to README.
+    
+    Rubric requires labeled axes on every visualization. Figures 1-2 (bar
+    charts) already had them, but the three rose charts (Figs 3-5) only had
+    angular labels (hour/day/month) and a title -- nothing told a reader
+    that radius = collision count. Added ax.set_ylabel("Collision Count")
+    to plot_severity_rose, plus ax.set_rlabel_position(-180/n) so the
+    radial gridline numbers sit in the gap between bars rather than
+    directly on top of the first category's wedge (still overlaps very
+    slightly at the innermost 1-2 gridlines on the 7- and 12-category
+    charts -- an arc-length-near-zero-at-the-centre limitation of rose
+    charts with full data coverage, not fixable by repositioning alone).
+    
+    README's How to Run section had "pip install -r requirements.txt" but
+    was missing the "pip freeze > requirements.txt" command that actually
+    generated it (Task 9 asks for both to be shown). Added, with a note
+    that it was run from inside the clean venv per Decision 24.
+    
+    Notebook also carries forward manual edits already made directly in
+    the file before this session (author name, wording tweaks, an added
+    default-dtype memory comparison cell) -- untouched here.
+
+ README.md           |   5 ++
+ data_workflow.ipynb | 205 ++++++++++++++++++++++++++++++++++++++--------------
+ 2 files changed, 155 insertions(+), 55 deletions(-)
+
+commit a71950a74c35e5bdaf479754b3337e589b52d9bc
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 12:29:19 2026 +0100
+
+    Rework decode_categorical_codes to use pd.merge instead of dict-mapping.
+    
+    Previously built a Python dict from the lookup subset and applied it
+    with .astype(str).map(code_to_label) -- workable, but an unnecessary
+    detour when pandas already has a direct tool for "join a lookup table
+    onto a dataframe by key": merge. Now each field's lookup rows
+    (code/format, label) are pulled from the data guide, renamed to
+    {field, field_label}, and merged onto df on that field (left join,
+    string keys on both sides for the same category-dtype-from-CSV reason
+    as before). The temporary {field}_label column replaces the original
+    coded column and is dropped.
+    
+    Also carried over the user's manual phrasing edits made directly in
+    the notebook (2021-2025 inclusive; underscore-style italics; a couple
+    of trimmed sentences; a note on the data guide's historical mapping
+    sheet) -- those were already on disk and are untouched here.
+
+ data_workflow.ipynb | 48 +++++++++++++++++++++++-------------------------
+ 1 file changed, 23 insertions(+), 25 deletions(-)
+
+commit fec25ddf94082b55e780220adef0b37f0e3ddcf2
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 11:23:59 2026 +0100
+
+    Fix stale usecols reference in Summary & Interpretation.
+    
+    The Limitations paragraph (Task 8) still described the old design --
+    "only 9 of 37+ fields were loaded (Decision on usecols)" -- left over
+    from before the ingestion fix. That's no longer true: all 44 columns
+    are loaded and inspected in Data Ingestion now. Reworded to say what's
+    actually still limited: the cleaning/EDA/visualization work narrows to
+    9 columns, so *this analysis* (not the dataset) is blind to weather,
+    road surface, junction detail etc., and the sentinel check only ran
+    over those 9 narrowed columns.
+
+ data_workflow.ipynb | 108 +++++++++++++++++++++++++++-------------------------
+ 1 file changed, 56 insertions(+), 52 deletions(-)
+
+commit d889e85acc15a6f7a10dffccc62dff68023c5aae
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 11:20:05 2026 +0100
+
+    Ground README ML/DL reflection in the actual full-column breakdown.
+    
+    The ML workflow / neural-net-prep bullet previously listed categorical
+    fields from memory (weather, road surface, etc.) rather than from the
+    data. Now that ingestion loads the full 44-column table, the notebook
+    itself detects 23 genuine coded categorical fields via the data guide
+    and this bullet references that real, computed list instead of a
+    hand-picked one — plus the enhanced_collision_severity /
+    did_police_officer_attend_scene_of_collision naming mismatch that only
+    showed up once the whole schema was actually inspected.
+
+ README.md | 33 ++++++++++++++++++++++++---------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
+
+commit bcc4a613469df748e64d9337acf8323cd7fc88d6
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 11:20:00 2026 +0100
+
+    Fix ingestion: load the full dataset before narrowing columns.
+    
+    Task 2 previously used usecols to trim the CSV down to the 9 columns
+    this analysis needs, at read time. That was wrong: it meant .info()/
+    summary stats never covered the whole 44-column collision table, and
+    the ML/DL-prep discussion in the README couldn't be grounded in the
+    actual full schema.
+    
+    Now: load all 44 columns first (with category dtype applied to the 23
+    fields the data guide documents as genuinely coded, detected
+    programmatically rather than hand-picked), run .info()/.describe() and
+    show .head() on that full frame, THEN narrow to the columns this
+    severity-vs-time/speed analysis and its visualizations actually need
+    and drop the full frame. The narrowing happens for the downstream
+    work specifically, not as part of ingestion.
+    
+    Loading everything first also surfaced a genuine data-guide gotcha:
+    two guide field names (enhanced_collision_severity,
+    did_police_officer_attend_scene_of_collision) don't match the actual
+    CSV column names — invisible if you never look at the whole table.
+
+ data_workflow.ipynb | 1915 ++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 1572 insertions(+), 343 deletions(-)
+
+commit a545bbc681feec9d0da163c373dcd30767543767
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:53:03 2026 +0100
+
+    requirements.txt.
+
+ requirements.txt | 108 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 108 insertions(+)
+
+commit 00b1be4a09aaad7434c7996d310f3c91c2b7ae34
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:52:12 2026 +0100
+
+    README with reflections.
+
+ README.md | 62 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+
+commit d86d54277dd639ed7c139fcd3a00f3bad3f1727d
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:51:33 2026 +0100
+
+    Summary and interpretation.
+
+ data_workflow.ipynb | 279 +++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 166 insertions(+), 113 deletions(-)
+
+commit 7daca134651d2487598d4d1ae44173105913527d
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:50:21 2026 +0100
+
+    5 visualizations with interpretations.
+
+ data_workflow.ipynb | 519 +++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 453 insertions(+), 66 deletions(-)
+
+commit cbd6f6c4a2d7ebb50f9b33165ab5018328de888f
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:46:20 2026 +0100
+
+    EDA function + 5 grouped summaries.
+
+ data_workflow.ipynb | 267 +++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 212 insertions(+), 55 deletions(-)
+
+commit 3b4f653e479ec0f51a25e3af65a3af5a3a620d12
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:45:43 2026 +0100
+
+    Temporal derivation helper.
+
+ data_workflow.ipynb | 229 +++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 184 insertions(+), 45 deletions(-)
+
+commit 5a2e194b9005fdf13a4b5673cc38d6791db77e0a
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:45:04 2026 +0100
+
+    Cleaning function 2: dimension decode.
+
+ data_workflow.ipynb | 205 +++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 170 insertions(+), 35 deletions(-)
+
+commit 6f4f60979e6fc1e89ef682315c2ae863e885ebeb
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:44:04 2026 +0100
+
+    Cleaning function 1: sentinel handling.
+
+ data_workflow.ipynb | 155 ++++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 131 insertions(+), 24 deletions(-)
+
+commit 25ada2e13c2cb5bdf30ee6546f0ce6ecc4cbfd26
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:42:53 2026 +0100
+
+    Data ingestion with memory-conscious dtypes.
+
+ data_workflow.ipynb | 383 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 381 insertions(+), 2 deletions(-)
+
+commit aea9d026e92347dc3bcb01c8ec063225dd6d7b8c
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:42:05 2026 +0100
+
+    Notebook scaffold + intro.
+
+ data_workflow.ipynb | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+commit 6086f30311c1cb240977cb1f77d1cfa724938da5
+Author: LittleRabbitFooFoo <simon@infinityrocketplastics.co.uk>
+Date:   Fri Jul 31 10:41:14 2026 +0100
+
+    Initial environment setup.
+
+ .gitignore                                              |  11 +++++++++++
+ ...istics-road-safety-open-dataset-data-guide-2025.xlsx | Bin 0 -> 81378 bytes
+ data/raw/.gitkeep                                       |   0
+ 3 files changed, 11 insertions(+)
