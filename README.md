@@ -7,10 +7,13 @@ environment (posted speed limit). Covers ingestion, cleaning, EDA, and
 visualization; no model training (out of scope for this project).
 
 ## What was built
-- `data_workflow.ipynb` — the full workflow: memory-conscious ingestion, two
-  documented cleaning functions, a parameterised EDA function, and five
-  interpreted visualizations, in clearly headed sections (Setup, Data
-  Ingestion, Data Cleaning, EDA, Visualizations, Summary & Interpretation).
+- `data_workflow.ipynb` — the full workflow: full-width ingestion (all 44
+  collision-table columns, so dtypes/summary stats reflect the whole
+  dataset) narrowed only afterwards to the columns this analysis and its
+  visualizations actually need, two documented cleaning functions, a
+  parameterised EDA function, and five interpreted visualizations, in
+  clearly headed sections (Setup, Data Ingestion, Data Cleaning, EDA,
+  Visualizations, Summary & Interpretation).
 
 ## Dataset
 **STATS19 Road Safety Collision Data** — the UK Department for Transport's
@@ -46,11 +49,23 @@ the notebook reads the local data files listed above.
   real unknown would mask genuine missingness as if it were ordinary data,
   producing misleadingly confident conclusions. Both risks are why this
   notebook nulls sentinels explicitly rather than dropping or imputing them.
-- **ML workflow changes:** the coded categorical fields (weather, road
-  surface, junction detail, light conditions, road type, etc.) would need
-  one-hot (or similar) encoding, and count fields (`number_of_vehicles`,
-  `number_of_casualties`) would need scaling before use in models sensitive
-  to feature magnitude.
+- **ML workflow changes:** the notebook's full-width ingestion step
+  programmatically checks every field's entry in the DfT data guide and
+  finds 23 of the collision table's 44 columns are genuine coded categorical
+  fields (e.g. `weather_conditions`, `road_surface_conditions`,
+  `junction_detail`, `light_conditions`, `road_type`, `urban_or_rural_area`,
+  plus higher-cardinality ones like `police_force` and
+  `local_authority_district`) — these would need one-hot (or similar)
+  encoding. Continuous/count/identifier fields (`number_of_vehicles`,
+  `number_of_casualties`, `speed_limit`, `first_road_number`,
+  `second_road_number`, the lat/long/easting/northing location fields) would
+  need scaling instead. Doing the check against the full schema, rather than
+  guessing from memory, also turned up a real gotcha: two fields the guide
+  names (`enhanced_collision_severity`,
+  `did_police_officer_attend_scene_of_collision`) don't match the actual CSV
+  column names (`enhanced_severity_collision`,
+  `did_police_officer_attend_scene_of_accident`) — a reminder to verify
+  field names empirically before trusting documentation.
 - **Neural network prep:** the same encoding/scaling requirements apply, plus
   attention to class imbalance — Fatal collisions are a small fraction (~1.5%)
   of the data, which would need addressing (e.g. class weighting or
