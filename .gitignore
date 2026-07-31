@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Raw data sourced externally (see README for provenance) — too large / not
+# appropriate to version control.
+data/raw/*.csv
+
+# Personal planning/scratch notes, not part of the graded deliverable.
+project1_plan_and_decisions.md
