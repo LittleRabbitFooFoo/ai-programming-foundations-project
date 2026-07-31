@@ -37,6 +37,11 @@ source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 jupyter notebook data_workflow.ipynb
 ```
+`requirements.txt` was generated from inside this clean venv (not the base
+Python install) with:
+```bash
+pip freeze > requirements.txt
+```
 Run all cells top to bottom. No network access or download step is required —
 the notebook reads the local data files listed above.
 
